@@ -21,7 +21,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::745520790011:role/cdk-hnb659fds-deploy-role-745520790011-us-east-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::745520790011:role/cdk-hnb659fds-cfn-exec-role-745520790011-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-745520790011-us-east-1/44295e5e8f41123b1ea85b88e20ab8a414a1231d49b3b250fc38520a3634cb32.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-745520790011-us-east-1/00b17e810c5cfdda5f82ef1779069af111e6ea04bace768a34a4b82b08c412f9.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -379,7 +379,7 @@
         "/razvan-my-app-Web/MySite/ServerFunction/CurrentVersion/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "MySiteServerFunctionCurrentVersion3F4F5DD8de8a7450d12bf1e64d3c7c5883974f43"
+            "data": "MySiteServerFunctionCurrentVersion3F4F5DD8a03307b6e4626f170d82d5ab973ecb44"
           }
         ],
         "/razvan-my-app-Web/MySite/ServerFunction/FunctionUrl/Resource": [
