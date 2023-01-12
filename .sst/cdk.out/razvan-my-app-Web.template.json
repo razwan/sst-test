@@ -1,0 +1,3267 @@
+{
+ "Resources": {
+  "CustomResourceHandlerServiceRole41AEC181": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   }
+  },
+  "CustomResourceHandlerServiceRoleDefaultPolicy73F93F56": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "ssm:GetParametersByPath",
+        "ssm:PutParameter"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        "arn:aws:ssm:us-east-1:745520790011:parameter/sst/my-app/razvan/*",
+        "arn:aws:ssm:us-east-1:745520790011:parameter/sst/my-app/.fallback/*"
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "CustomResourceHandlerServiceRoleDefaultPolicy73F93F56",
+    "Roles": [
+     {
+      "Ref": "CustomResourceHandlerServiceRole41AEC181"
+     }
+    ]
+   }
+  },
+  "CustomResourceHandlerE8FB56BA": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-745520790011-us-east-1",
+     "S3Key": "1e2aecaec42f8c9e4821cb553a713f1d11304b1b9daa2c8bf2ffe831babb7606.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "CustomResourceHandlerServiceRole41AEC181",
+      "Arn"
+     ]
+    },
+    "Handler": "index.handler",
+    "MemorySize": 1024,
+    "Runtime": "nodejs16.x",
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ],
+    "Timeout": 900
+   },
+   "DependsOn": [
+    "CustomResourceHandlerServiceRoleDefaultPolicy73F93F56",
+    "CustomResourceHandlerServiceRole41AEC181"
+   ]
+  },
+  "SecretsMigration": {
+   "Type": "Custom::SecretsMigration",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "CustomResourceHandlerE8FB56BA",
+      "Arn"
+     ]
+    },
+    "App": "my-app",
+    "Stage": "razvan",
+    "SSTVersion": "2.0.0-rc.28"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "Databasevpc5A8A9FAE": {
+   "Type": "AWS::EC2::VPC",
+   "Properties": {
+    "CidrBlock": "10.0.0.0/16",
+    "EnableDnsHostnames": true,
+    "EnableDnsSupport": true,
+    "InstanceTenancy": "default",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "razvan-my-app-Web/Database/vpc"
+     },
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   }
+  },
+  "DatabasevpcPublicSubnet1SubnetF05319EF": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "VpcId": {
+     "Ref": "Databasevpc5A8A9FAE"
+    },
+    "AvailabilityZone": "us-east-1a",
+    "CidrBlock": "10.0.0.0/19",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "Name",
+      "Value": "razvan-my-app-Web/Database/vpc/PublicSubnet1"
+     },
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   }
+  },
+  "DatabasevpcPublicSubnet1RouteTableD97C5D18": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "VpcId": {
+     "Ref": "Databasevpc5A8A9FAE"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "razvan-my-app-Web/Database/vpc/PublicSubnet1"
+     },
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   }
+  },
+  "DatabasevpcPublicSubnet1RouteTableAssociationC565A767": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "DatabasevpcPublicSubnet1RouteTableD97C5D18"
+    },
+    "SubnetId": {
+     "Ref": "DatabasevpcPublicSubnet1SubnetF05319EF"
+    }
+   }
+  },
+  "DatabasevpcPublicSubnet1DefaultRoute75E4BC4A": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "DatabasevpcPublicSubnet1RouteTableD97C5D18"
+    },
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "DatabasevpcIGWD5E99159"
+    }
+   },
+   "DependsOn": [
+    "DatabasevpcVPCGW06A0488A"
+   ]
+  },
+  "DatabasevpcPublicSubnet2Subnet80DC541F": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "VpcId": {
+     "Ref": "Databasevpc5A8A9FAE"
+    },
+    "AvailabilityZone": "us-east-1b",
+    "CidrBlock": "10.0.32.0/19",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "Name",
+      "Value": "razvan-my-app-Web/Database/vpc/PublicSubnet2"
+     },
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   }
+  },
+  "DatabasevpcPublicSubnet2RouteTableF6BF59D7": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "VpcId": {
+     "Ref": "Databasevpc5A8A9FAE"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "razvan-my-app-Web/Database/vpc/PublicSubnet2"
+     },
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   }
+  },
+  "DatabasevpcPublicSubnet2RouteTableAssociation47FF4D17": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "DatabasevpcPublicSubnet2RouteTableF6BF59D7"
+    },
+    "SubnetId": {
+     "Ref": "DatabasevpcPublicSubnet2Subnet80DC541F"
+    }
+   }
+  },
+  "DatabasevpcPublicSubnet2DefaultRoute096CE322": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "DatabasevpcPublicSubnet2RouteTableF6BF59D7"
+    },
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "DatabasevpcIGWD5E99159"
+    }
+   },
+   "DependsOn": [
+    "DatabasevpcVPCGW06A0488A"
+   ]
+  },
+  "DatabasevpcPublicSubnet3SubnetEFCDE911": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "VpcId": {
+     "Ref": "Databasevpc5A8A9FAE"
+    },
+    "AvailabilityZone": "us-east-1c",
+    "CidrBlock": "10.0.64.0/19",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "Name",
+      "Value": "razvan-my-app-Web/Database/vpc/PublicSubnet3"
+     },
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   }
+  },
+  "DatabasevpcPublicSubnet3RouteTable19259839": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "VpcId": {
+     "Ref": "Databasevpc5A8A9FAE"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "razvan-my-app-Web/Database/vpc/PublicSubnet3"
+     },
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   }
+  },
+  "DatabasevpcPublicSubnet3RouteTableAssociationDAAB0455": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "DatabasevpcPublicSubnet3RouteTable19259839"
+    },
+    "SubnetId": {
+     "Ref": "DatabasevpcPublicSubnet3SubnetEFCDE911"
+    }
+   }
+  },
+  "DatabasevpcPublicSubnet3DefaultRoute8B6C2740": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "DatabasevpcPublicSubnet3RouteTable19259839"
+    },
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "DatabasevpcIGWD5E99159"
+    }
+   },
+   "DependsOn": [
+    "DatabasevpcVPCGW06A0488A"
+   ]
+  },
+  "DatabasevpcIsolatedSubnet1Subnet5FDD7388": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "VpcId": {
+     "Ref": "Databasevpc5A8A9FAE"
+    },
+    "AvailabilityZone": "us-east-1a",
+    "CidrBlock": "10.0.96.0/19",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "Name",
+      "Value": "razvan-my-app-Web/Database/vpc/IsolatedSubnet1"
+     },
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   }
+  },
+  "DatabasevpcIsolatedSubnet1RouteTableA8307814": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "VpcId": {
+     "Ref": "Databasevpc5A8A9FAE"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "razvan-my-app-Web/Database/vpc/IsolatedSubnet1"
+     },
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   }
+  },
+  "DatabasevpcIsolatedSubnet1RouteTableAssociationE6AF4D27": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "DatabasevpcIsolatedSubnet1RouteTableA8307814"
+    },
+    "SubnetId": {
+     "Ref": "DatabasevpcIsolatedSubnet1Subnet5FDD7388"
+    }
+   }
+  },
+  "DatabasevpcIsolatedSubnet2Subnet4FCB1DE0": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "VpcId": {
+     "Ref": "Databasevpc5A8A9FAE"
+    },
+    "AvailabilityZone": "us-east-1b",
+    "CidrBlock": "10.0.128.0/19",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "Name",
+      "Value": "razvan-my-app-Web/Database/vpc/IsolatedSubnet2"
+     },
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   }
+  },
+  "DatabasevpcIsolatedSubnet2RouteTableF8A8C476": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "VpcId": {
+     "Ref": "Databasevpc5A8A9FAE"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "razvan-my-app-Web/Database/vpc/IsolatedSubnet2"
+     },
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   }
+  },
+  "DatabasevpcIsolatedSubnet2RouteTableAssociation82B9FD20": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "DatabasevpcIsolatedSubnet2RouteTableF8A8C476"
+    },
+    "SubnetId": {
+     "Ref": "DatabasevpcIsolatedSubnet2Subnet4FCB1DE0"
+    }
+   }
+  },
+  "DatabasevpcIsolatedSubnet3Subnet0F8E594D": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "VpcId": {
+     "Ref": "Databasevpc5A8A9FAE"
+    },
+    "AvailabilityZone": "us-east-1c",
+    "CidrBlock": "10.0.160.0/19",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "Name",
+      "Value": "razvan-my-app-Web/Database/vpc/IsolatedSubnet3"
+     },
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   }
+  },
+  "DatabasevpcIsolatedSubnet3RouteTable7B7A7336": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "VpcId": {
+     "Ref": "Databasevpc5A8A9FAE"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "razvan-my-app-Web/Database/vpc/IsolatedSubnet3"
+     },
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   }
+  },
+  "DatabasevpcIsolatedSubnet3RouteTableAssociation979FA85C": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "DatabasevpcIsolatedSubnet3RouteTable7B7A7336"
+    },
+    "SubnetId": {
+     "Ref": "DatabasevpcIsolatedSubnet3Subnet0F8E594D"
+    }
+   }
+  },
+  "DatabasevpcIGWD5E99159": {
+   "Type": "AWS::EC2::InternetGateway",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "razvan-my-app-Web/Database/vpc"
+     },
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   }
+  },
+  "DatabasevpcVPCGW06A0488A": {
+   "Type": "AWS::EC2::VPCGatewayAttachment",
+   "Properties": {
+    "VpcId": {
+     "Ref": "Databasevpc5A8A9FAE"
+    },
+    "InternetGatewayId": {
+     "Ref": "DatabasevpcIGWD5E99159"
+    }
+   }
+  },
+  "DatabaseClusterSubnets5540150D": {
+   "Type": "AWS::RDS::DBSubnetGroup",
+   "Properties": {
+    "DBSubnetGroupDescription": "Subnets for Cluster database",
+    "SubnetIds": [
+     {
+      "Ref": "DatabasevpcIsolatedSubnet1Subnet5FDD7388"
+     },
+     {
+      "Ref": "DatabasevpcIsolatedSubnet2Subnet4FCB1DE0"
+     },
+     {
+      "Ref": "DatabasevpcIsolatedSubnet3Subnet0F8E594D"
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   }
+  },
+  "DatabaseClusterSecurityGroupFEF1426A": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "RDS security group",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Databasevpc5A8A9FAE"
+    }
+   }
+  },
+  "DatabaseClusterSecretD1FB634F": {
+   "Type": "AWS::SecretsManager::Secret",
+   "Properties": {
+    "Description": {
+     "Fn::Join": [
+      "",
+      [
+       "Generated by the CDK for stack: ",
+       {
+        "Ref": "AWS::StackName"
+       }
+      ]
+     ]
+    },
+    "GenerateSecretString": {
+     "ExcludeCharacters": " %+~`#$&*()|[]{}:;<>?!'/@\"\\",
+     "GenerateStringKey": "password",
+     "PasswordLength": 30,
+     "SecretStringTemplate": "{\"username\":\"postgres\"}"
+    },
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "DatabaseClusterSecretAttachmentDC8466C0": {
+   "Type": "AWS::SecretsManager::SecretTargetAttachment",
+   "Properties": {
+    "SecretId": {
+     "Ref": "DatabaseClusterSecretD1FB634F"
+    },
+    "TargetId": {
+     "Ref": "DatabaseCluster5B53A178"
+    },
+    "TargetType": "AWS::RDS::DBCluster"
+   }
+  },
+  "DatabaseCluster5B53A178": {
+   "Type": "AWS::RDS::DBCluster",
+   "Properties": {
+    "CopyTagsToSnapshot": true,
+    "DatabaseName": "my_database",
+    "DBClusterIdentifier": "razvan-my-app-database",
+    "DBClusterParameterGroupName": "default.aurora-postgresql10",
+    "DBSubnetGroupName": {
+     "Ref": "DatabaseClusterSubnets5540150D"
+    },
+    "EnableHttpEndpoint": true,
+    "Engine": "aurora-postgresql",
+    "EngineMode": "serverless",
+    "EngineVersion": "10.14",
+    "MasterUsername": {
+     "Fn::Join": [
+      "",
+      [
+       "{{resolve:secretsmanager:",
+       {
+        "Ref": "DatabaseClusterSecretD1FB634F"
+       },
+       ":SecretString:username::}}"
+      ]
+     ]
+    },
+    "MasterUserPassword": {
+     "Fn::Join": [
+      "",
+      [
+       "{{resolve:secretsmanager:",
+       {
+        "Ref": "DatabaseClusterSecretD1FB634F"
+       },
+       ":SecretString:password::}}"
+      ]
+     ]
+    },
+    "ScalingConfiguration": {
+     "AutoPause": true,
+     "MaxCapacity": 16,
+     "MinCapacity": 2,
+     "SecondsUntilAutoPause": 300
+    },
+    "StorageEncrypted": true,
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ],
+    "VpcSecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "DatabaseClusterSecurityGroupFEF1426A",
+       "GroupId"
+      ]
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Snapshot",
+   "DeletionPolicy": "Snapshot"
+  },
+  "DatabaseParameterclusterArn89AF8DE9": {
+   "Type": "AWS::SSM::Parameter",
+   "Properties": {
+    "Type": "String",
+    "Value": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":rds:us-east-1:745520790011:cluster:",
+       {
+        "Ref": "DatabaseCluster5B53A178"
+       }
+      ]
+     ]
+    },
+    "Name": "/sst/my-app/razvan/RDS/Database/clusterArn",
+    "Tags": {
+     "sst:app": "my-app",
+     "sst:stage": "razvan"
+    }
+   }
+  },
+  "DatabaseParametersecretArn64629CC0": {
+   "Type": "AWS::SSM::Parameter",
+   "Properties": {
+    "Type": "String",
+    "Value": {
+     "Ref": "DatabaseClusterSecretAttachmentDC8466C0"
+    },
+    "Name": "/sst/my-app/razvan/RDS/Database/secretArn",
+    "Tags": {
+     "sst:app": "my-app",
+     "sst:stage": "razvan"
+    }
+   }
+  },
+  "DatabaseParameterdefaultDatabaseName82306248": {
+   "Type": "AWS::SSM::Parameter",
+   "Properties": {
+    "Type": "String",
+    "Value": "my_database",
+    "Name": "/sst/my-app/razvan/RDS/Database/defaultDatabaseName",
+    "Tags": {
+     "sst:app": "my-app",
+     "sst:stage": "razvan"
+    }
+   }
+  },
+  "MyApiACFCC7B0": {
+   "Type": "AWS::ApiGatewayV2::Api",
+   "Properties": {
+    "CorsConfiguration": {
+     "AllowCredentials": false,
+     "AllowHeaders": [
+      "*"
+     ],
+     "AllowMethods": [
+      "*"
+     ],
+     "AllowOrigins": [
+      "*"
+     ]
+    },
+    "Name": "razvan-my-app-MyApi",
+    "ProtocolType": "HTTP",
+    "Tags": {
+     "sst:app": "my-app",
+     "sst:stage": "razvan"
+    }
+   }
+  },
+  "MyApiDefaultStage2CEF8E0B": {
+   "Type": "AWS::ApiGatewayV2::Stage",
+   "Properties": {
+    "ApiId": {
+     "Ref": "MyApiACFCC7B0"
+    },
+    "StageName": "$default",
+    "AccessLogSettings": {
+     "DestinationArn": {
+      "Fn::GetAtt": [
+       "MyApiLogGroupB7145B72",
+       "Arn"
+      ]
+     },
+     "Format": "{\"requestTime\":\"$context.requestTime\",\"requestId\":\"$context.requestId\",\"httpMethod\":\"$context.httpMethod\",\"path\":\"$context.path\",\"routeKey\":\"$context.routeKey\",\"status\":$context.status,\"responseLatency\":$context.responseLatency,\"integrationRequestId\":\"$context.integration.requestId\",\"integrationStatus\":\"$context.integration.status\",\"integrationLatency\":\"$context.integration.latency\",\"integrationServiceStatus\":\"$context.integration.integrationStatus\",\"ip\":\"$context.identity.sourceIp\",\"userAgent\":\"$context.identity.userAgent\",\"cognitoIdentityId\":\"$context.identity.cognitoIdentityId\"}"
+    },
+    "AutoDeploy": true,
+    "Tags": {
+     "sst:app": "my-app",
+     "sst:stage": "razvan"
+    }
+   }
+  },
+  "MyApiLogGroupB7145B72": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/vendedlogs/apis/razvan-my-app-MyApi-",
+       {
+        "Ref": "MyApiACFCC7B0"
+       },
+       "/default"
+      ]
+     ]
+    },
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain"
+  },
+  "MyApiLambdaGETServiceRole70028B24": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   }
+  },
+  "MyApiLambdaGETServiceRoleDefaultPolicy28039A48": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "xray:PutTraceSegments",
+        "xray:PutTelemetryRecords"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "MyApiLambdaGETServiceRoleDefaultPolicy28039A48",
+    "Roles": [
+     {
+      "Ref": "MyApiLambdaGETServiceRole70028B24"
+     }
+    ]
+   }
+  },
+  "MyApiLambdaGETD7F46A6C": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-745520790011-us-east-1",
+     "S3Key": "11dfe5b8a66f56c30ad572c30430086cd800d1bc8b2ec31524695e644793b3df.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "MyApiLambdaGETServiceRole70028B24",
+      "Arn"
+     ]
+    },
+    "Environment": {
+     "Variables": {
+      "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+      "SST_APP": "my-app",
+      "SST_STAGE": "razvan",
+      "SST_SSM_PREFIX": "/sst/my-app/razvan/"
+     }
+    },
+    "EphemeralStorage": {
+     "Size": 512
+    },
+    "Handler": "services/functions/lambda.handler",
+    "MemorySize": 1024,
+    "Runtime": "nodejs16.x",
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ],
+    "Timeout": 10,
+    "TracingConfig": {
+     "Mode": "Active"
+    }
+   },
+   "DependsOn": [
+    "MyApiLambdaGETServiceRoleDefaultPolicy28039A48",
+    "MyApiLambdaGETServiceRole70028B24"
+   ]
+  },
+  "MyApiRouteGETIntegrationGET32ACB7B8": {
+   "Type": "AWS::ApiGatewayV2::Integration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "MyApiACFCC7B0"
+    },
+    "IntegrationType": "AWS_PROXY",
+    "IntegrationUri": {
+     "Fn::GetAtt": [
+      "MyApiLambdaGETD7F46A6C",
+      "Arn"
+     ]
+    },
+    "PayloadFormatVersion": "2.0"
+   }
+  },
+  "MyApiRouteGETIntegrationGETPermission196D5E0A": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "MyApiLambdaGETD7F46A6C",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:745520790011:",
+       {
+        "Ref": "MyApiACFCC7B0"
+       },
+       "/*/*/"
+      ]
+     ]
+    }
+   }
+  },
+  "MyApiRouteGET4054E753": {
+   "Type": "AWS::ApiGatewayV2::Route",
+   "Properties": {
+    "ApiId": {
+     "Ref": "MyApiACFCC7B0"
+    },
+    "RouteKey": "GET /",
+    "AuthorizationType": "NONE",
+    "Target": {
+     "Fn::Join": [
+      "",
+      [
+       "integrations/",
+       {
+        "Ref": "MyApiRouteGETIntegrationGET32ACB7B8"
+       }
+      ]
+     ]
+    }
+   }
+  },
+  "MyApiParameterurlDD738CDF": {
+   "Type": "AWS::SSM::Parameter",
+   "Properties": {
+    "Type": "String",
+    "Value": {
+     "Fn::GetAtt": [
+      "MyApiACFCC7B0",
+      "ApiEndpoint"
+     ]
+    },
+    "Name": "/sst/my-app/razvan/Api/MyApi/url",
+    "Tags": {
+     "sst:app": "my-app",
+     "sst:stage": "razvan"
+    }
+   }
+  },
+  "MySiteAwsCliLayerC700FB8A": {
+   "Type": "AWS::Lambda::LayerVersion",
+   "Properties": {
+    "Content": {
+     "S3Bucket": "cdk-hnb659fds-assets-745520790011-us-east-1",
+     "S3Key": "5d8d1d0aacea23824c62f362e1e3c14b7dd14a31c71b53bfae4d14a6373c5510.zip"
+    },
+    "Description": "/opt/awscli/aws"
+   }
+  },
+  "MySiteS3BucketC12E302E": {
+   "Type": "AWS::S3::Bucket",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "aws-cdk:auto-delete-objects",
+      "Value": "true"
+     },
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "MySiteS3BucketPolicy3E4F7199": {
+   "Type": "AWS::S3::BucketPolicy",
+   "Properties": {
+    "Bucket": {
+     "Ref": "MySiteS3BucketC12E302E"
+    },
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "s3:GetObject",
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": "*"
+       },
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          {
+           "Fn::GetAtt": [
+            "MySiteS3BucketC12E302E",
+            "Arn"
+           ]
+          },
+          "/*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "s3:GetBucket*",
+        "s3:List*",
+        "s3:DeleteObject*"
+       ],
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::GetAtt": [
+          "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+          "Arn"
+         ]
+        }
+       },
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "MySiteS3BucketC12E302E",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "MySiteS3BucketC12E302E",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": "s3:GetObject",
+       "Effect": "Allow",
+       "Principal": {
+        "CanonicalUser": {
+         "Fn::GetAtt": [
+          "MySiteDistributionOrigin2S3Origin146966FF",
+          "S3CanonicalUserId"
+         ]
+        }
+       },
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          {
+           "Fn::GetAtt": [
+            "MySiteS3BucketC12E302E",
+            "Arn"
+           ]
+          },
+          "/*"
+         ]
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "MySiteS3BucketAutoDeleteObjectsCustomResourceC01656DB": {
+   "Type": "Custom::S3AutoDeleteObjects",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+      "Arn"
+     ]
+    },
+    "BucketName": {
+     "Ref": "MySiteS3BucketC12E302E"
+    }
+   },
+   "DependsOn": [
+    "MySiteS3BucketPolicy3E4F7199"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "MySiteServerFunctionServiceRole67A62574": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   }
+  },
+  "MySiteServerFunctionServiceRoleDefaultPolicyB42D970D": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:GetObject*",
+        "s3:GetBucket*",
+        "s3:List*",
+        "s3:DeleteObject*",
+        "s3:PutObject",
+        "s3:PutObjectLegalHold",
+        "s3:PutObjectRetention",
+        "s3:PutObjectTagging",
+        "s3:PutObjectVersionTagging",
+        "s3:Abort*"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "MySiteS3BucketC12E302E",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "MySiteS3BucketC12E302E",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "MySiteServerFunctionServiceRoleDefaultPolicyB42D970D",
+    "Roles": [
+     {
+      "Ref": "MySiteServerFunctionServiceRole67A62574"
+     }
+    ]
+   }
+  },
+  "MySiteServerFunctionFAA7311A": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-745520790011-us-east-1",
+     "S3Key": "02713b9cda5ff4764474f813bad18586f6a821454bea56d532dc97c3fdfd3457.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "MySiteServerFunctionServiceRole67A62574",
+      "Arn"
+     ]
+    },
+    "Description": "Server handler for Next.js",
+    "Handler": "index.handler",
+    "MemorySize": 512,
+    "Runtime": "nodejs18.x",
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ],
+    "Timeout": 10
+   },
+   "DependsOn": [
+    "MySiteServerFunctionServiceRoleDefaultPolicyB42D970D",
+    "MySiteServerFunctionServiceRole67A62574"
+   ]
+  },
+  "MySiteServerFunctionLogRetention3AAF5D6A": {
+   "Type": "Custom::LogRetention",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+      "Arn"
+     ]
+    },
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "MySiteServerFunctionFAA7311A"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 3
+   }
+  },
+  "MySiteServerFunctionCurrentVersion3F4F5DD8de8a7450d12bf1e64d3c7c5883974f43": {
+   "Type": "AWS::Lambda::Version",
+   "Properties": {
+    "FunctionName": {
+     "Ref": "MySiteServerFunctionFAA7311A"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "MySiteServerFunctionFunctionUrl27F4575B": {
+   "Type": "AWS::Lambda::Url",
+   "Properties": {
+    "AuthType": "NONE",
+    "TargetFunctionArn": {
+     "Fn::GetAtt": [
+      "MySiteServerFunctionFAA7311A",
+      "Arn"
+     ]
+    }
+   }
+  },
+  "MySiteServerFunctioninvokefunctionurl7C4C286D": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunctionUrl",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "MySiteServerFunctionFAA7311A",
+      "Arn"
+     ]
+    },
+    "Principal": "*",
+    "FunctionUrlAuthType": "NONE"
+   }
+  },
+  "MySiteS3UploaderServiceRole66787C49": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   }
+  },
+  "MySiteS3UploaderServiceRoleDefaultPolicyF5B24A07": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:GetObject*",
+        "s3:GetBucket*",
+        "s3:List*",
+        "s3:DeleteObject*",
+        "s3:PutObject",
+        "s3:PutObjectLegalHold",
+        "s3:PutObjectRetention",
+        "s3:PutObjectTagging",
+        "s3:PutObjectVersionTagging",
+        "s3:Abort*"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "MySiteS3BucketC12E302E",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "MySiteS3BucketC12E302E",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "s3:GetObject*",
+        "s3:GetBucket*",
+        "s3:List*"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":s3:::cdk-hnb659fds-assets-745520790011-us-east-1"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":s3:::cdk-hnb659fds-assets-745520790011-us-east-1/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "MySiteS3UploaderServiceRoleDefaultPolicyF5B24A07",
+    "Roles": [
+     {
+      "Ref": "MySiteS3UploaderServiceRole66787C49"
+     }
+    ]
+   }
+  },
+  "MySiteS3UploaderC8569BFA": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-745520790011-us-east-1",
+     "S3Key": "7f9b0644cd8fdc8233b0e049ce57cf85b64369851fe06ec6a83824fdb2f8edf9.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "MySiteS3UploaderServiceRole66787C49",
+      "Arn"
+     ]
+    },
+    "Handler": "s3-upload.handler",
+    "Layers": [
+     {
+      "Ref": "MySiteAwsCliLayerC700FB8A"
+     }
+    ],
+    "MemorySize": 1024,
+    "Runtime": "python3.7",
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ],
+    "Timeout": 900
+   },
+   "DependsOn": [
+    "MySiteS3UploaderServiceRoleDefaultPolicyF5B24A07",
+    "MySiteS3UploaderServiceRole66787C49"
+   ]
+  },
+  "MySiteS3HandlerServiceRole1439671A": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   }
+  },
+  "MySiteS3HandlerServiceRoleDefaultPolicyE036CFA8": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:GetObject*",
+        "s3:GetBucket*",
+        "s3:List*",
+        "s3:DeleteObject*",
+        "s3:PutObject",
+        "s3:PutObjectLegalHold",
+        "s3:PutObjectRetention",
+        "s3:PutObjectTagging",
+        "s3:PutObjectVersionTagging",
+        "s3:Abort*"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "MySiteS3BucketC12E302E",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "MySiteS3BucketC12E302E",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": "lambda:InvokeFunction",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "MySiteS3UploaderC8569BFA",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "MySiteS3UploaderC8569BFA",
+             "Arn"
+            ]
+           },
+           ":*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "MySiteS3HandlerServiceRoleDefaultPolicyE036CFA8",
+    "Roles": [
+     {
+      "Ref": "MySiteS3HandlerServiceRole1439671A"
+     }
+    ]
+   }
+  },
+  "MySiteS3Handler9AFF1921": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-745520790011-us-east-1",
+     "S3Key": "7f9b0644cd8fdc8233b0e049ce57cf85b64369851fe06ec6a83824fdb2f8edf9.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "MySiteS3HandlerServiceRole1439671A",
+      "Arn"
+     ]
+    },
+    "Environment": {
+     "Variables": {
+      "UPLOADER_FUNCTION_NAME": {
+       "Ref": "MySiteS3UploaderC8569BFA"
+      }
+     }
+    },
+    "Handler": "s3-handler.handler",
+    "Layers": [
+     {
+      "Ref": "MySiteAwsCliLayerC700FB8A"
+     }
+    ],
+    "MemorySize": 1024,
+    "Runtime": "python3.7",
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ],
+    "Timeout": 900
+   },
+   "DependsOn": [
+    "MySiteS3HandlerServiceRoleDefaultPolicyE036CFA8",
+    "MySiteS3HandlerServiceRole1439671A"
+   ]
+  },
+  "MySiteS3Deployment52D04D99": {
+   "Type": "Custom::SSTBucketDeployment",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "MySiteS3Handler9AFF1921",
+      "Arn"
+     ]
+    },
+    "Sources": [
+     {
+      "BucketName": "cdk-hnb659fds-assets-745520790011-us-east-1",
+      "ObjectKey": "9920b54aa0da6a6423693d3a028dc500db6aa5c913bdf27063a47c65b1065d26.zip"
+     }
+    ],
+    "DestinationBucketName": {
+     "Ref": "MySiteS3BucketC12E302E"
+    },
+    "FileOptions": [
+     [
+      "--exclude",
+      "*",
+      "--include",
+      "BUILD_ID",
+      "--cache-control",
+      "public,max-age=0,s-maxage=31536000,must-revalidate"
+     ],
+     [
+      "--exclude",
+      "*",
+      "--include",
+      "_next/*",
+      "--cache-control",
+      "public,max-age=31536000,immutable"
+     ],
+     [
+      "--exclude",
+      "*",
+      "--include",
+      "favicon.ico",
+      "--cache-control",
+      "public,max-age=0,s-maxage=31536000,must-revalidate"
+     ],
+     [
+      "--exclude",
+      "*",
+      "--include",
+      "next.svg",
+      "--cache-control",
+      "public,max-age=0,s-maxage=31536000,must-revalidate"
+     ],
+     [
+      "--exclude",
+      "*",
+      "--include",
+      "thirteen.svg",
+      "--cache-control",
+      "public,max-age=0,s-maxage=31536000,must-revalidate"
+     ],
+     [
+      "--exclude",
+      "*",
+      "--include",
+      "vercel.svg",
+      "--cache-control",
+      "public,max-age=0,s-maxage=31536000,must-revalidate"
+     ]
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "MySiteMiddlewareServerLambdaRole8C79805A": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      },
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "edgelambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+    ],
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   }
+  },
+  "MySiteMiddlewareMiddlewareEdgeLambda4A7FCF9F": {
+   "Type": "Custom::SSTEdgeLambda",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "EdgeLambdaProviderA390C7CF",
+      "Arn"
+     ]
+    },
+    "FunctionNamePrefix": "razvan-my-app-Web-MiddlewareEdgeLambda",
+    "FunctionBucket": {
+     "Fn::GetAtt": [
+      "EdgeLambdaBucket",
+      "BucketName"
+     ]
+    },
+    "FunctionParams": {
+     "Description": "Middleware handler",
+     "Handler": "index-wrapper.handler",
+     "Code": {
+      "S3Bucket": "cdk-hnb659fds-assets-745520790011-us-east-1",
+      "S3Key": "496a5a8453859bf7370e51e6ac872c37266e1a5bc8c67353190119625a60e10f.zip"
+     },
+     "Runtime": "nodejs18.x",
+     "MemorySize": 128,
+     "Timeout": 5,
+     "Role": {
+      "Fn::GetAtt": [
+       "MySiteMiddlewareServerLambdaRole8C79805A",
+       "Arn"
+      ]
+     }
+    }
+   },
+   "DependsOn": [
+    "MySiteMiddlewareMiddlewareLambdaCodeReplacer9917A66D"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "MySiteMiddlewareMiddlewareEdgeLambdaVersion35C676C4598f436a638d532e8d292559c6e8b75a": {
+   "Type": "Custom::SSTEdgeLambdaVersion",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "EdgeLambdaVersionProviderC834A935",
+      "Arn"
+     ]
+    },
+    "FunctionArn": {
+     "Fn::GetAtt": [
+      "MySiteMiddlewareMiddlewareEdgeLambda4A7FCF9F",
+      "FunctionArn"
+     ]
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "MySiteMiddlewareMiddlewareLambdaCodeReplacer9917A66D": {
+   "Type": "Custom::SSTLambdaCodeUpdater",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "LambdaCodeReplacerProvider8234F5E4",
+      "Arn"
+     ]
+    },
+    "Source": {
+     "BucketName": "cdk-hnb659fds-assets-745520790011-us-east-1",
+     "ObjectKey": "496a5a8453859bf7370e51e6ac872c37266e1a5bc8c67353190119625a60e10f.zip"
+    },
+    "ReplaceValues": [
+     {
+      "files": "index-wrapper.mjs",
+      "search": "\"{{ _SST_EDGE_FUNCTION_ENVIRONMENT_ }}\"",
+      "replace": "{}"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "MySiteServerCache7C4EF7E1": {
+   "Type": "AWS::CloudFront::CachePolicy",
+   "Properties": {
+    "CachePolicyConfig": {
+     "Comment": "SST server response cache policy",
+     "DefaultTTL": 0,
+     "MaxTTL": 31536000,
+     "MinTTL": 0,
+     "Name": "razvanmyappWebMySiteServerCache17DF1E92-us-east-1",
+     "ParametersInCacheKeyAndForwardedToOrigin": {
+      "CookiesConfig": {
+       "CookieBehavior": "all"
+      },
+      "EnableAcceptEncodingBrotli": true,
+      "EnableAcceptEncodingGzip": true,
+      "HeadersConfig": {
+       "HeaderBehavior": "whitelist",
+       "Headers": [
+        "accept",
+        "x-op-middleware-request-headers",
+        "x-op-middleware-response-headers",
+        "x-nextjs-data",
+        "x-middleware-prefetch"
+       ]
+      },
+      "QueryStringsConfig": {
+       "QueryStringBehavior": "all"
+      }
+     }
+    }
+   }
+  },
+  "MySiteImageFunctionServiceRoleEA59C006": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   }
+  },
+  "MySiteImageFunction81281BB1": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-745520790011-us-east-1",
+     "S3Key": "630d3fd21af05f6b1d099a9b6c7302038e7bb891f4034da635e9dc79a0e66416.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "MySiteImageFunctionServiceRoleEA59C006",
+      "Arn"
+     ]
+    },
+    "Description": "Image optimization handler for Next.js",
+    "Environment": {
+     "Variables": {
+      "BUCKET_NAME": {
+       "Ref": "MySiteS3BucketC12E302E"
+      }
+     }
+    },
+    "Handler": "index.handler",
+    "MemorySize": 512,
+    "Runtime": "nodejs18.x",
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ],
+    "Timeout": 10
+   },
+   "DependsOn": [
+    "MySiteImageFunctionServiceRoleEA59C006"
+   ]
+  },
+  "MySiteImageFunctionLogRetention46555F2C": {
+   "Type": "Custom::LogRetention",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+      "Arn"
+     ]
+    },
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "MySiteImageFunction81281BB1"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 3
+   }
+  },
+  "MySiteImageFunctionCurrentVersion03E389E675b5140db4b106bf1bf9588464b6edc3": {
+   "Type": "AWS::Lambda::Version",
+   "Properties": {
+    "FunctionName": {
+     "Ref": "MySiteImageFunction81281BB1"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "MySiteImageFunctionFunctionUrl150A9995": {
+   "Type": "AWS::Lambda::Url",
+   "Properties": {
+    "AuthType": "NONE",
+    "TargetFunctionArn": {
+     "Fn::GetAtt": [
+      "MySiteImageFunction81281BB1",
+      "Arn"
+     ]
+    }
+   }
+  },
+  "MySiteImageFunctioninvokefunctionurl456E6C8A": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunctionUrl",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "MySiteImageFunction81281BB1",
+      "Arn"
+     ]
+    },
+    "Principal": "*",
+    "FunctionUrlAuthType": "NONE"
+   }
+  },
+  "MySiteDistributionOrigin2S3Origin146966FF": {
+   "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
+   "Properties": {
+    "CloudFrontOriginAccessIdentityConfig": {
+     "Comment": "Identity for razvanmyappWebMySiteDistributionOrigin2EB93414F"
+    }
+   },
+   "DependsOn": [
+    "MySiteS3Deployment52D04D99"
+   ]
+  },
+  "MySiteDistribution6E1BF252": {
+   "Type": "AWS::CloudFront::Distribution",
+   "Properties": {
+    "DistributionConfig": {
+     "Aliases": [],
+     "CacheBehaviors": [
+      {
+       "AllowedMethods": [
+        "GET",
+        "HEAD",
+        "OPTIONS",
+        "PUT",
+        "PATCH",
+        "POST",
+        "DELETE"
+       ],
+       "CachePolicyId": {
+        "Ref": "MySiteServerCache7C4EF7E1"
+       },
+       "CachedMethods": [
+        "GET",
+        "HEAD",
+        "OPTIONS"
+       ],
+       "Compress": true,
+       "PathPattern": "api/*",
+       "TargetOriginId": "razvanmyappWebMySiteDistributionOrigin3E64E2978",
+       "ViewerProtocolPolicy": "redirect-to-https"
+      },
+      {
+       "AllowedMethods": [
+        "GET",
+        "HEAD",
+        "OPTIONS",
+        "PUT",
+        "PATCH",
+        "POST",
+        "DELETE"
+       ],
+       "CachePolicyId": {
+        "Ref": "MySiteServerCache7C4EF7E1"
+       },
+       "CachedMethods": [
+        "GET",
+        "HEAD",
+        "OPTIONS"
+       ],
+       "Compress": true,
+       "PathPattern": "_next/data/*",
+       "TargetOriginId": "razvanmyappWebMySiteDistributionOrigin3E64E2978",
+       "ViewerProtocolPolicy": "redirect-to-https"
+      },
+      {
+       "AllowedMethods": [
+        "GET",
+        "HEAD",
+        "OPTIONS",
+        "PUT",
+        "PATCH",
+        "POST",
+        "DELETE"
+       ],
+       "CachePolicyId": {
+        "Ref": "MySiteServerCache7C4EF7E1"
+       },
+       "CachedMethods": [
+        "GET",
+        "HEAD",
+        "OPTIONS"
+       ],
+       "Compress": true,
+       "PathPattern": "_next/image*",
+       "TargetOriginId": "razvanmyappWebMySiteDistributionOrigin40D416444",
+       "ViewerProtocolPolicy": "redirect-to-https"
+      },
+      {
+       "AllowedMethods": [
+        "GET",
+        "HEAD",
+        "OPTIONS"
+       ],
+       "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
+       "CachedMethods": [
+        "GET",
+        "HEAD",
+        "OPTIONS"
+       ],
+       "Compress": true,
+       "PathPattern": "_next/*",
+       "TargetOriginId": "razvanmyappWebMySiteDistributionOrigin2EB93414F",
+       "ViewerProtocolPolicy": "redirect-to-https"
+      }
+     ],
+     "DefaultCacheBehavior": {
+      "CachePolicyId": {
+       "Ref": "MySiteServerCache7C4EF7E1"
+      },
+      "Compress": true,
+      "TargetOriginId": "razvanmyappWebMySiteDistributionOriginGroup1E754FDF1",
+      "ViewerProtocolPolicy": "redirect-to-https"
+     },
+     "DefaultRootObject": "",
+     "Enabled": true,
+     "HttpVersion": "http2",
+     "IPV6Enabled": true,
+     "OriginGroups": {
+      "Items": [
+       {
+        "FailoverCriteria": {
+         "StatusCodes": {
+          "Items": [
+           404
+          ],
+          "Quantity": 1
+         }
+        },
+        "Id": "razvanmyappWebMySiteDistributionOriginGroup1E754FDF1",
+        "Members": {
+         "Items": [
+          {
+           "OriginId": "razvanmyappWebMySiteDistributionOrigin186E907AB"
+          },
+          {
+           "OriginId": "razvanmyappWebMySiteDistributionOrigin2EB93414F"
+          }
+         ],
+         "Quantity": 2
+        }
+       }
+      ],
+      "Quantity": 1
+     },
+     "Origins": [
+      {
+       "CustomOriginConfig": {
+        "OriginProtocolPolicy": "https-only",
+        "OriginSSLProtocols": [
+         "TLSv1.2"
+        ]
+       },
+       "DomainName": {
+        "Fn::Select": [
+         0,
+         {
+          "Fn::Split": [
+           "/",
+           {
+            "Fn::Select": [
+             1,
+             {
+              "Fn::Split": [
+               "//",
+               {
+                "Fn::GetAtt": [
+                 "MySiteServerFunctionFunctionUrl27F4575B",
+                 "FunctionUrl"
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       "Id": "razvanmyappWebMySiteDistributionOrigin186E907AB"
+      },
+      {
+       "DomainName": {
+        "Fn::GetAtt": [
+         "MySiteS3BucketC12E302E",
+         "RegionalDomainName"
+        ]
+       },
+       "Id": "razvanmyappWebMySiteDistributionOrigin2EB93414F",
+       "S3OriginConfig": {
+        "OriginAccessIdentity": {
+         "Fn::Join": [
+          "",
+          [
+           "origin-access-identity/cloudfront/",
+           {
+            "Ref": "MySiteDistributionOrigin2S3Origin146966FF"
+           }
+          ]
+         ]
+        }
+       }
+      },
+      {
+       "CustomOriginConfig": {
+        "OriginProtocolPolicy": "https-only",
+        "OriginSSLProtocols": [
+         "TLSv1.2"
+        ]
+       },
+       "DomainName": {
+        "Fn::Select": [
+         0,
+         {
+          "Fn::Split": [
+           "/",
+           {
+            "Fn::Select": [
+             1,
+             {
+              "Fn::Split": [
+               "//",
+               {
+                "Fn::GetAtt": [
+                 "MySiteServerFunctionFunctionUrl27F4575B",
+                 "FunctionUrl"
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       "Id": "razvanmyappWebMySiteDistributionOrigin3E64E2978"
+      },
+      {
+       "CustomOriginConfig": {
+        "OriginProtocolPolicy": "https-only",
+        "OriginSSLProtocols": [
+         "TLSv1.2"
+        ]
+       },
+       "DomainName": {
+        "Fn::Select": [
+         0,
+         {
+          "Fn::Split": [
+           "/",
+           {
+            "Fn::Select": [
+             1,
+             {
+              "Fn::Split": [
+               "//",
+               {
+                "Fn::GetAtt": [
+                 "MySiteImageFunctionFunctionUrl150A9995",
+                 "FunctionUrl"
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       "Id": "razvanmyappWebMySiteDistributionOrigin40D416444"
+      }
+     ]
+    },
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   },
+   "DependsOn": [
+    "MySiteS3Deployment52D04D99"
+   ]
+  },
+  "MySiteCloudFrontInvalidatorServiceRole56D1BAF5": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   }
+  },
+  "MySiteCloudFrontInvalidatorServiceRoleDefaultPolicy36829ED2": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "cloudfront:GetInvalidation",
+        "cloudfront:CreateInvalidation"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "MySiteCloudFrontInvalidatorServiceRoleDefaultPolicy36829ED2",
+    "Roles": [
+     {
+      "Ref": "MySiteCloudFrontInvalidatorServiceRole56D1BAF5"
+     }
+    ]
+   }
+  },
+  "MySiteCloudFrontInvalidator4FFCDB63": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-745520790011-us-east-1",
+     "S3Key": "7f9b0644cd8fdc8233b0e049ce57cf85b64369851fe06ec6a83824fdb2f8edf9.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "MySiteCloudFrontInvalidatorServiceRole56D1BAF5",
+      "Arn"
+     ]
+    },
+    "Handler": "cf-invalidate.handler",
+    "Layers": [
+     {
+      "Ref": "MySiteAwsCliLayerC700FB8A"
+     }
+    ],
+    "MemorySize": 1024,
+    "Runtime": "python3.7",
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ],
+    "Timeout": 900
+   },
+   "DependsOn": [
+    "MySiteCloudFrontInvalidatorServiceRoleDefaultPolicy36829ED2",
+    "MySiteCloudFrontInvalidatorServiceRole56D1BAF5"
+   ]
+  },
+  "MySiteCloudFrontInvalidation51FCFB4A": {
+   "Type": "Custom::SSTCloudFrontInvalidation",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "MySiteCloudFrontInvalidator4FFCDB63",
+      "Arn"
+     ]
+    },
+    "BuildId": "IMhBuhORiIbZeqIKw8rA3",
+    "DistributionId": {
+     "Ref": "MySiteDistribution6E1BF252"
+    },
+    "DistributionPaths": [
+     "/*"
+    ],
+    "WaitForInvalidation": true
+   },
+   "DependsOn": [
+    "MySiteDistributionOrigin2S3Origin146966FF",
+    "MySiteDistribution6E1BF252"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "MySiteParameterurl73B72714": {
+   "Type": "AWS::SSM::Parameter",
+   "Properties": {
+    "Type": "String",
+    "Value": {
+     "Fn::Join": [
+      "",
+      [
+       "https://",
+       {
+        "Fn::GetAtt": [
+         "MySiteDistribution6E1BF252",
+         "DomainName"
+        ]
+       }
+      ]
+     ]
+    },
+    "Name": "/sst/my-app/razvan/NextjsSite/MySite/url",
+    "Tags": {
+     "sst:app": "my-app",
+     "sst:stage": "razvan"
+    }
+   }
+  },
+  "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Version": "2012-10-17",
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ]
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Sub": "arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+     }
+    ]
+   }
+  },
+  "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-745520790011-us-east-1",
+     "S3Key": "3f51abb709b8e65167a45aeed02bab11540603d909005d7148230ba5ce6c74d7.zip"
+    },
+    "Timeout": 900,
+    "MemorySize": 128,
+    "Handler": "__entrypoint__.handler",
+    "Role": {
+     "Fn::GetAtt": [
+      "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs14.x",
+    "Description": {
+     "Fn::Join": [
+      "",
+      [
+       "Lambda function for auto-deleting objects in ",
+       {
+        "Ref": "MySiteS3BucketC12E302E"
+       },
+       " S3 bucket."
+      ]
+     ]
+    }
+   },
+   "DependsOn": [
+    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092"
+   ]
+  },
+  "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   }
+  },
+  "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:PutRetentionPolicy",
+        "logs:DeleteRetentionPolicy"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+    "Roles": [
+     {
+      "Ref": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB"
+     }
+    ]
+   }
+  },
+  "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Handler": "index.handler",
+    "Runtime": "nodejs14.x",
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-745520790011-us-east-1",
+     "S3Key": "eb5b005c858404ea0c8f68098ed5dcdf5340e02461f149751d10f59c210d5ef8.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+      "Arn"
+     ]
+    },
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   },
+   "DependsOn": [
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB"
+   ]
+  },
+  "EdgeLambdaBucketProviderServiceRoleB21F58C0": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   }
+  },
+  "EdgeLambdaBucketProviderServiceRoleDefaultPolicyA855DE0C": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "s3:*",
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "EdgeLambdaBucketProviderServiceRoleDefaultPolicyA855DE0C",
+    "Roles": [
+     {
+      "Ref": "EdgeLambdaBucketProviderServiceRoleB21F58C0"
+     }
+    ]
+   }
+  },
+  "EdgeLambdaBucketProviderCBE2EFD7": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-745520790011-us-east-1",
+     "S3Key": "d700750c608dfaaae7c8feffb66e91e77d0a9fe1ff25f7c3ba7ecdc26cdecfdd.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "EdgeLambdaBucketProviderServiceRoleB21F58C0",
+      "Arn"
+     ]
+    },
+    "Handler": "s3-bucket.handler",
+    "MemorySize": 1024,
+    "Runtime": "nodejs16.x",
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ],
+    "Timeout": 900
+   },
+   "DependsOn": [
+    "EdgeLambdaBucketProviderServiceRoleDefaultPolicyA855DE0C",
+    "EdgeLambdaBucketProviderServiceRoleB21F58C0"
+   ]
+  },
+  "EdgeLambdaBucket": {
+   "Type": "Custom::SSTEdgeLambdaBucket",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "EdgeLambdaBucketProviderCBE2EFD7",
+      "Arn"
+     ]
+    },
+    "BucketNamePrefix": "razvan-my-app-Web-EdgeLambdaBucket"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "EdgeLambdaProviderServiceRoleDABCB773": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   }
+  },
+  "EdgeLambdaProviderServiceRoleDefaultPolicy0CCD7673": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "lambda:*",
+        "s3:*"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": "iam:PassRole",
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "MySiteMiddlewareServerLambdaRole8C79805A",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "EdgeLambdaProviderServiceRoleDefaultPolicy0CCD7673",
+    "Roles": [
+     {
+      "Ref": "EdgeLambdaProviderServiceRoleDABCB773"
+     }
+    ]
+   }
+  },
+  "EdgeLambdaProviderA390C7CF": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-745520790011-us-east-1",
+     "S3Key": "d700750c608dfaaae7c8feffb66e91e77d0a9fe1ff25f7c3ba7ecdc26cdecfdd.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "EdgeLambdaProviderServiceRoleDABCB773",
+      "Arn"
+     ]
+    },
+    "Handler": "edge-lambda.handler",
+    "MemorySize": 1024,
+    "Runtime": "nodejs16.x",
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ],
+    "Timeout": 900
+   },
+   "DependsOn": [
+    "EdgeLambdaProviderServiceRoleDefaultPolicy0CCD7673",
+    "EdgeLambdaProviderServiceRoleDABCB773"
+   ]
+  },
+  "EdgeLambdaVersionProviderServiceRole2CCF7CE4": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   }
+  },
+  "EdgeLambdaVersionProviderServiceRoleDefaultPolicy70F41469": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "lambda:*",
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "EdgeLambdaVersionProviderServiceRoleDefaultPolicy70F41469",
+    "Roles": [
+     {
+      "Ref": "EdgeLambdaVersionProviderServiceRole2CCF7CE4"
+     }
+    ]
+   }
+  },
+  "EdgeLambdaVersionProviderC834A935": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-745520790011-us-east-1",
+     "S3Key": "d700750c608dfaaae7c8feffb66e91e77d0a9fe1ff25f7c3ba7ecdc26cdecfdd.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "EdgeLambdaVersionProviderServiceRole2CCF7CE4",
+      "Arn"
+     ]
+    },
+    "Handler": "edge-lambda-version.handler",
+    "MemorySize": 1024,
+    "Runtime": "nodejs16.x",
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ],
+    "Timeout": 900
+   },
+   "DependsOn": [
+    "EdgeLambdaVersionProviderServiceRoleDefaultPolicy70F41469",
+    "EdgeLambdaVersionProviderServiceRole2CCF7CE4"
+   ]
+  },
+  "AwsCliLayerF44AAF94": {
+   "Type": "AWS::Lambda::LayerVersion",
+   "Properties": {
+    "Content": {
+     "S3Bucket": "cdk-hnb659fds-assets-745520790011-us-east-1",
+     "S3Key": "5d8d1d0aacea23824c62f362e1e3c14b7dd14a31c71b53bfae4d14a6373c5510.zip"
+    },
+    "Description": "/opt/awscli/aws"
+   }
+  },
+  "LambdaCodeReplacerProviderServiceRole89EC96F4": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ]
+   }
+  },
+  "LambdaCodeReplacerProviderServiceRoleDefaultPolicyF7C11370": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "s3:*",
+       "Effect": "Allow",
+       "Resource": "arn:aws:s3:::cdk-hnb659fds-assets-745520790011-us-east-1/496a5a8453859bf7370e51e6ac872c37266e1a5bc8c67353190119625a60e10f.zip"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "LambdaCodeReplacerProviderServiceRoleDefaultPolicyF7C11370",
+    "Roles": [
+     {
+      "Ref": "LambdaCodeReplacerProviderServiceRole89EC96F4"
+     }
+    ]
+   }
+  },
+  "LambdaCodeReplacerProvider8234F5E4": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-745520790011-us-east-1",
+     "S3Key": "022ee99e56db95304491d417abe23d69c70a9a239a61233988e9b1b7ee797086.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaCodeReplacerProviderServiceRole89EC96F4",
+      "Arn"
+     ]
+    },
+    "Handler": "lambda-code-updater.handler",
+    "Layers": [
+     {
+      "Ref": "AwsCliLayerF44AAF94"
+     }
+    ],
+    "MemorySize": 1024,
+    "Runtime": "python3.7",
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "my-app"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "razvan"
+     }
+    ],
+    "Timeout": 900
+   },
+   "DependsOn": [
+    "LambdaCodeReplacerProviderServiceRoleDefaultPolicyF7C11370",
+    "LambdaCodeReplacerProviderServiceRole89EC96F4"
+   ]
+  }
+ },
+ "Outputs": {
+  "ApiEndpoint": {
+   "Value": {
+    "Fn::GetAtt": [
+     "MyApiACFCC7B0",
+     "ApiEndpoint"
+    ]
+   }
+  },
+  "SecretArn": {
+   "Value": {
+    "Ref": "DatabaseClusterSecretAttachmentDC8466C0"
+   }
+  },
+  "ClusterIdentifier": {
+   "Value": {
+    "Ref": "DatabaseCluster5B53A178"
+   }
+  },
+  "Frontend": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Fn::GetAtt": [
+        "MySiteDistribution6E1BF252",
+        "DomainName"
+       ]
+      }
+     ]
+    ]
+   }
+  },
+  "SstMetadata": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "{\"app\":\"my-app\",\"stage\":\"razvan\",\"version\":\"2.0.0-rc.28\",\"bootstrapBucket\":\"sstbootstrap-useast124d14e4b-flkqr4rg39ob\",\"metadata\":[{\"id\":\"Database\",\"addr\":\"c859cafd266b0f07bec1676a77075e181ea91a4541\",\"stack\":\"razvan-my-app-Web\",\"type\":\"RDS\",\"data\":{\"engine\":\"postgresql10.14\",\"secretArn\":\"",
+      {
+       "Ref": "DatabaseClusterSecretAttachmentDC8466C0"
+      },
+      "\",\"clusterArn\":\"arn:",
+      {
+       "Ref": "AWS::Partition"
+      },
+      ":rds:us-east-1:745520790011:cluster:",
+      {
+       "Ref": "DatabaseCluster5B53A178"
+      },
+      "\",\"clusterIdentifier\":\"",
+      {
+       "Ref": "DatabaseCluster5B53A178"
+      },
+      "\",\"defaultDatabaseName\":\"my_database\"}},{\"id\":\"MyApi\",\"addr\":\"c8dcdfffd93e306bbc88888032d1a14d554faf1c8e\",\"stack\":\"razvan-my-app-Web\",\"type\":\"Api\",\"data\":{\"graphql\":false,\"url\":\"https://",
+      {
+       "Ref": "MyApiACFCC7B0"
+      },
+      ".execute-api.us-east-1.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/\",\"httpApiId\":\"",
+      {
+       "Ref": "MyApiACFCC7B0"
+      },
+      "\",\"routes\":[{\"type\":\"function\",\"route\":\"GET /\",\"fn\":{\"node\":\"c84688dbae99d1267655017ac333b852c9e69fedd2\",\"stack\":\"razvan-my-app-Web\"}}]}},{\"id\":\"Lambda_GET_--\",\"addr\":\"c84688dbae99d1267655017ac333b852c9e69fedd2\",\"stack\":\"razvan-my-app-Web\",\"type\":\"Function\",\"data\":{\"arn\":\"",
+      {
+       "Fn::GetAtt": [
+        "MyApiLambdaGETD7F46A6C",
+        "Arn"
+       ]
+      },
+      "\",\"localId\":\"c84688dbae99d1267655017ac333b852c9e69fedd2\",\"secrets\":[]}},{\"id\":\"MySite\",\"addr\":\"c895578b575545bdf3046faf6e83ea903e9ed0b62f\",\"stack\":\"razvan-my-app-Web\",\"type\":\"SsrSite\",\"data\":{\"distributionId\":\"",
+      {
+       "Ref": "MySiteDistribution6E1BF252"
+      },
+      "\"}}]}"
+     ]
+    ]
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

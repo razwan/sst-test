@@ -1,0 +1,713 @@
+{
+  "version": "22.0.0",
+  "artifacts": {
+    "razvan-my-app-Web.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "razvan-my-app-Web.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "razvan-my-app-Web": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://745520790011/us-east-1",
+      "properties": {
+        "templateFile": "razvan-my-app-Web.template.json",
+        "tags": {
+          "sst:app": "my-app",
+          "sst:stage": "razvan"
+        },
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::745520790011:role/cdk-hnb659fds-deploy-role-745520790011-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::745520790011:role/cdk-hnb659fds-cfn-exec-role-745520790011-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-745520790011-us-east-1/44295e5e8f41123b1ea85b88e20ab8a414a1231d49b3b250fc38520a3634cb32.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "razvan-my-app-Web.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::745520790011:role/cdk-hnb659fds-lookup-role-745520790011-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "razvan-my-app-Web.assets"
+      ],
+      "metadata": {
+        "/razvan-my-app-Web": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "sst:app",
+                "Value": "my-app"
+              },
+              {
+                "Key": "sst:stage",
+                "Value": "razvan"
+              }
+            ]
+          }
+        ],
+        "/razvan-my-app-Web/CustomResourceHandler/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomResourceHandlerServiceRole41AEC181"
+          }
+        ],
+        "/razvan-my-app-Web/CustomResourceHandler/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomResourceHandlerServiceRoleDefaultPolicy73F93F56"
+          }
+        ],
+        "/razvan-my-app-Web/CustomResourceHandler/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomResourceHandlerE8FB56BA"
+          }
+        ],
+        "/razvan-my-app-Web/SecretsMigration/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SecretsMigration"
+          }
+        ],
+        "/razvan-my-app-Web/Database/vpc/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "Databasevpc5A8A9FAE"
+          }
+        ],
+        "/razvan-my-app-Web/Database/vpc/PublicSubnet1/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabasevpcPublicSubnet1SubnetF05319EF"
+          }
+        ],
+        "/razvan-my-app-Web/Database/vpc/PublicSubnet1/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabasevpcPublicSubnet1RouteTableD97C5D18"
+          }
+        ],
+        "/razvan-my-app-Web/Database/vpc/PublicSubnet1/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabasevpcPublicSubnet1RouteTableAssociationC565A767"
+          }
+        ],
+        "/razvan-my-app-Web/Database/vpc/PublicSubnet1/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabasevpcPublicSubnet1DefaultRoute75E4BC4A"
+          }
+        ],
+        "/razvan-my-app-Web/Database/vpc/PublicSubnet2/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabasevpcPublicSubnet2Subnet80DC541F"
+          }
+        ],
+        "/razvan-my-app-Web/Database/vpc/PublicSubnet2/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabasevpcPublicSubnet2RouteTableF6BF59D7"
+          }
+        ],
+        "/razvan-my-app-Web/Database/vpc/PublicSubnet2/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabasevpcPublicSubnet2RouteTableAssociation47FF4D17"
+          }
+        ],
+        "/razvan-my-app-Web/Database/vpc/PublicSubnet2/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabasevpcPublicSubnet2DefaultRoute096CE322"
+          }
+        ],
+        "/razvan-my-app-Web/Database/vpc/PublicSubnet3/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabasevpcPublicSubnet3SubnetEFCDE911"
+          }
+        ],
+        "/razvan-my-app-Web/Database/vpc/PublicSubnet3/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabasevpcPublicSubnet3RouteTable19259839"
+          }
+        ],
+        "/razvan-my-app-Web/Database/vpc/PublicSubnet3/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabasevpcPublicSubnet3RouteTableAssociationDAAB0455"
+          }
+        ],
+        "/razvan-my-app-Web/Database/vpc/PublicSubnet3/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabasevpcPublicSubnet3DefaultRoute8B6C2740"
+          }
+        ],
+        "/razvan-my-app-Web/Database/vpc/IsolatedSubnet1/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabasevpcIsolatedSubnet1Subnet5FDD7388"
+          }
+        ],
+        "/razvan-my-app-Web/Database/vpc/IsolatedSubnet1/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabasevpcIsolatedSubnet1RouteTableA8307814"
+          }
+        ],
+        "/razvan-my-app-Web/Database/vpc/IsolatedSubnet1/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabasevpcIsolatedSubnet1RouteTableAssociationE6AF4D27"
+          }
+        ],
+        "/razvan-my-app-Web/Database/vpc/IsolatedSubnet2/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabasevpcIsolatedSubnet2Subnet4FCB1DE0"
+          }
+        ],
+        "/razvan-my-app-Web/Database/vpc/IsolatedSubnet2/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabasevpcIsolatedSubnet2RouteTableF8A8C476"
+          }
+        ],
+        "/razvan-my-app-Web/Database/vpc/IsolatedSubnet2/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabasevpcIsolatedSubnet2RouteTableAssociation82B9FD20"
+          }
+        ],
+        "/razvan-my-app-Web/Database/vpc/IsolatedSubnet3/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabasevpcIsolatedSubnet3Subnet0F8E594D"
+          }
+        ],
+        "/razvan-my-app-Web/Database/vpc/IsolatedSubnet3/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabasevpcIsolatedSubnet3RouteTable7B7A7336"
+          }
+        ],
+        "/razvan-my-app-Web/Database/vpc/IsolatedSubnet3/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabasevpcIsolatedSubnet3RouteTableAssociation979FA85C"
+          }
+        ],
+        "/razvan-my-app-Web/Database/vpc/IGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabasevpcIGWD5E99159"
+          }
+        ],
+        "/razvan-my-app-Web/Database/vpc/VPCGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabasevpcVPCGW06A0488A"
+          }
+        ],
+        "/razvan-my-app-Web/Database/Cluster/Subnets/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabaseClusterSubnets5540150D"
+          }
+        ],
+        "/razvan-my-app-Web/Database/Cluster/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabaseClusterSecurityGroupFEF1426A"
+          }
+        ],
+        "/razvan-my-app-Web/Database/Cluster/Secret/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabaseClusterSecretD1FB634F"
+          }
+        ],
+        "/razvan-my-app-Web/Database/Cluster/Secret/Attachment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabaseClusterSecretAttachmentDC8466C0"
+          }
+        ],
+        "/razvan-my-app-Web/Database/Cluster/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabaseCluster5B53A178"
+          }
+        ],
+        "/razvan-my-app-Web/Database/Parameter_clusterArn/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabaseParameterclusterArn89AF8DE9"
+          }
+        ],
+        "/razvan-my-app-Web/Database/Parameter_secretArn/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabaseParametersecretArn64629CC0"
+          }
+        ],
+        "/razvan-my-app-Web/Database/Parameter_defaultDatabaseName/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabaseParameterdefaultDatabaseName82306248"
+          }
+        ],
+        "/razvan-my-app-Web/MyApi/Api/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MyApiACFCC7B0"
+          }
+        ],
+        "/razvan-my-app-Web/MyApi/Api/DefaultStage/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MyApiDefaultStage2CEF8E0B"
+          }
+        ],
+        "/razvan-my-app-Web/MyApi/LogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MyApiLogGroupB7145B72"
+          }
+        ],
+        "/razvan-my-app-Web/MyApi/Lambda_GET_--/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MyApiLambdaGETServiceRole70028B24"
+          }
+        ],
+        "/razvan-my-app-Web/MyApi/Lambda_GET_--/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MyApiLambdaGETServiceRoleDefaultPolicy28039A48"
+          }
+        ],
+        "/razvan-my-app-Web/MyApi/Lambda_GET_--/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MyApiLambdaGETD7F46A6C"
+          }
+        ],
+        "/razvan-my-app-Web/MyApi/Route_GET_--/Integration_GET_--/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MyApiRouteGETIntegrationGET32ACB7B8"
+          }
+        ],
+        "/razvan-my-app-Web/MyApi/Route_GET_--/Integration_GET_---Permission": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MyApiRouteGETIntegrationGETPermission196D5E0A"
+          }
+        ],
+        "/razvan-my-app-Web/MyApi/Route_GET_--/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MyApiRouteGET4054E753"
+          }
+        ],
+        "/razvan-my-app-Web/MyApi/Parameter_url/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MyApiParameterurlDD738CDF"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/AwsCliLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteAwsCliLayerC700FB8A"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/S3Bucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteS3BucketC12E302E"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/S3Bucket/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteS3BucketPolicy3E4F7199"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/S3Bucket/AutoDeleteObjectsCustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteS3BucketAutoDeleteObjectsCustomResourceC01656DB"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/ServerFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteServerFunctionServiceRole67A62574"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/ServerFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteServerFunctionServiceRoleDefaultPolicyB42D970D"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/ServerFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteServerFunctionFAA7311A"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/ServerFunction/LogRetention/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteServerFunctionLogRetention3AAF5D6A"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/ServerFunction/CurrentVersion/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteServerFunctionCurrentVersion3F4F5DD8de8a7450d12bf1e64d3c7c5883974f43"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/ServerFunction/FunctionUrl/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteServerFunctionFunctionUrl27F4575B"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/ServerFunction/invoke-function-url": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteServerFunctioninvokefunctionurl7C4C286D"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/S3Uploader/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteS3UploaderServiceRole66787C49"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/S3Uploader/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteS3UploaderServiceRoleDefaultPolicyF5B24A07"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/S3Uploader/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteS3UploaderC8569BFA"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/S3Handler/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteS3HandlerServiceRole1439671A"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/S3Handler/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteS3HandlerServiceRoleDefaultPolicyE036CFA8"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/S3Handler/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteS3Handler9AFF1921"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/S3Deployment/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteS3Deployment52D04D99"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/Middleware/ServerLambdaRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteMiddlewareServerLambdaRole8C79805A"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/Middleware/MiddlewareEdgeLambda/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteMiddlewareMiddlewareEdgeLambda4A7FCF9F"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/Middleware/MiddlewareEdgeLambdaVersion/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteMiddlewareMiddlewareEdgeLambdaVersion35C676C4598f436a638d532e8d292559c6e8b75a"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/Middleware/MiddlewareLambdaCodeReplacer/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteMiddlewareMiddlewareLambdaCodeReplacer9917A66D"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/ServerCache/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteServerCache7C4EF7E1"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/ImageFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteImageFunctionServiceRoleEA59C006"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/ImageFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteImageFunction81281BB1"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/ImageFunction/LogRetention/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteImageFunctionLogRetention46555F2C"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/ImageFunction/CurrentVersion/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteImageFunctionCurrentVersion03E389E675b5140db4b106bf1bf9588464b6edc3"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/ImageFunction/FunctionUrl/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteImageFunctionFunctionUrl150A9995"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/ImageFunction/invoke-function-url": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteImageFunctioninvokefunctionurl456E6C8A"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/Distribution/Origin2/S3Origin/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteDistributionOrigin2S3Origin146966FF"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/Distribution/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteDistribution6E1BF252"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/CloudFrontInvalidator/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteCloudFrontInvalidatorServiceRole56D1BAF5"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/CloudFrontInvalidator/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteCloudFrontInvalidatorServiceRoleDefaultPolicy36829ED2"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/CloudFrontInvalidator/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteCloudFrontInvalidator4FFCDB63"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/CloudFrontInvalidation/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteCloudFrontInvalidation51FCFB4A"
+          }
+        ],
+        "/razvan-my-app-Web/MySite/Parameter_url/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MySiteParameterurl73B72714"
+          }
+        ],
+        "/razvan-my-app-Web/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092"
+          }
+        ],
+        "/razvan-my-app-Web/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F"
+          }
+        ],
+        "/razvan-my-app-Web/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB"
+          }
+        ],
+        "/razvan-my-app-Web/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB"
+          }
+        ],
+        "/razvan-my-app-Web/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A"
+          }
+        ],
+        "/razvan-my-app-Web/EdgeLambdaBucketProvider/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EdgeLambdaBucketProviderServiceRoleB21F58C0"
+          }
+        ],
+        "/razvan-my-app-Web/EdgeLambdaBucketProvider/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EdgeLambdaBucketProviderServiceRoleDefaultPolicyA855DE0C"
+          }
+        ],
+        "/razvan-my-app-Web/EdgeLambdaBucketProvider/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EdgeLambdaBucketProviderCBE2EFD7"
+          }
+        ],
+        "/razvan-my-app-Web/EdgeLambdaBucket/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EdgeLambdaBucket"
+          }
+        ],
+        "/razvan-my-app-Web/EdgeLambdaProvider/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EdgeLambdaProviderServiceRoleDABCB773"
+          }
+        ],
+        "/razvan-my-app-Web/EdgeLambdaProvider/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EdgeLambdaProviderServiceRoleDefaultPolicy0CCD7673"
+          }
+        ],
+        "/razvan-my-app-Web/EdgeLambdaProvider/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EdgeLambdaProviderA390C7CF"
+          }
+        ],
+        "/razvan-my-app-Web/EdgeLambdaVersionProvider/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EdgeLambdaVersionProviderServiceRole2CCF7CE4"
+          }
+        ],
+        "/razvan-my-app-Web/EdgeLambdaVersionProvider/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EdgeLambdaVersionProviderServiceRoleDefaultPolicy70F41469"
+          }
+        ],
+        "/razvan-my-app-Web/EdgeLambdaVersionProvider/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EdgeLambdaVersionProviderC834A935"
+          }
+        ],
+        "/razvan-my-app-Web/AwsCliLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AwsCliLayerF44AAF94"
+          }
+        ],
+        "/razvan-my-app-Web/LambdaCodeReplacerProvider/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaCodeReplacerProviderServiceRole89EC96F4"
+          }
+        ],
+        "/razvan-my-app-Web/LambdaCodeReplacerProvider/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaCodeReplacerProviderServiceRoleDefaultPolicyF7C11370"
+          }
+        ],
+        "/razvan-my-app-Web/LambdaCodeReplacerProvider/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaCodeReplacerProvider8234F5E4"
+          }
+        ],
+        "/razvan-my-app-Web/ApiEndpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiEndpoint"
+          }
+        ],
+        "/razvan-my-app-Web/SecretArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SecretArn"
+          }
+        ],
+        "/razvan-my-app-Web/ClusterIdentifier": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ClusterIdentifier"
+          }
+        ],
+        "/razvan-my-app-Web/Frontend": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "Frontend"
+          }
+        ],
+        "/razvan-my-app-Web/SstMetadata": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SstMetadata"
+          }
+        ],
+        "/razvan-my-app-Web/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/razvan-my-app-Web/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "razvan-my-app-Web"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}
