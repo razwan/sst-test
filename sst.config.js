@@ -1,10 +1,12 @@
 import { Api, NextjsSite, RDS } from "sst/constructs"
 
 export default {
+  
   config: () => ( {
     name: "my-app",
     region: "us-east-1",
   } ),
+
   stacks: async ( app ) => {
     app.stack( function Web( ctx ) {
 
